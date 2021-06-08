@@ -5,9 +5,9 @@ module.exports = {
   category: "admin",
   args: true,
   usage: "removeroleall <roles>",
-  permissions: "MANAGE_ROLES" || "ADMINISTRATOR",
-  bot: ["MANAGE_ROLES","ADMINISTRATOR"],
-  run: (client, message, args) => {
+ botPermission:["MANAGE_ROLES","ADMINISTRATOR"],
+  authorPermission:["MANAGE_ROLES","ADMINISTRATOR"],
+   run: (client, message, args) => {
     if (!message.guild.me.hasPermission("MANAGE_ROLES"))
       return message.channel.send(
         "I don't have enough permission to do that !"

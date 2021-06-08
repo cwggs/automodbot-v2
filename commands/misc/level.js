@@ -8,7 +8,7 @@ module.exports = {
   description: "Get the level of Author or Mentioned",
   usage: "level [user]",
   category: "misc",
-  bot: ["MANAGE_GUILD"],
+  botPermission: ["MANAGE_GUILD"],
   run: (client, message, args) => {
     let user;
     if (!args.length) {
@@ -57,7 +57,7 @@ module.exports = {
       .setAvatar(user.user.displayAvatarURL({ format: "png" }))
       .setCurrentXP(xp)
       .setRequiredXP(xpNeeded || 100)
-      .setStatus(user.user.presence.status)
+      .setStatus(user.user.presence.status, true ,5)
       .setProgressBar("#00FFFF", "COLOR")
       .setUsername(user.user.username, color)
       .setDiscriminator(user.user.discriminator)

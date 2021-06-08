@@ -10,15 +10,20 @@ module.exports = {
   description: "Get advance stats of given person or yourself",
   run: async (client, message, args) => {
     let user;
+
     if (!args.length) {
       // Display info about the calling user
+
       user = message.guild.member(message.author);
     } else {
       // Display info about the user specified by the first argument
+
       user = message.guild.member(
-        message.mentions.members.first() || await message.guild.members.fetch(args[0]))
-   
+        message.mentions.members.first() ||
+          (await message.guild.members.fetch(args[0]))
+      );
     }
+
     if (!user) {
       return message.channel.send(
         "<a:failed:798526823976796161> Unable to find this person!"
@@ -56,9 +61,40 @@ module.exports = {
     let badges = await user.user.flags;
     badges = await badges.toArray();
 
+    const emoji = {
+      brigade: "<:Employee:840602452797685780>",
+      partner: "<:Partner:840602641444110347>",
+      events: "<:hypesquad:840602824387723315>",
+      brillance: "<:hypesquadbrillance:840602991161376768>",
+      bravery: "<:hypesquadbravery:840603157524643881>",
+      balance: "<:hypesquadbalance:840603270140526624>",
+      hunter_gold: "<:huntergold:840603369998778398>",
+      hunter: "<:hunter:840603456975667201>",
+      support: "<:support:840603570826772531>",
+      developers: "<:developers:840603705958072340>",
+      nitro: "<:nitro:840603857351737394>",
+      boost: "<:boosts:840603943033241610>",
+      bot: "<:botclassic:840604043306074142>"
+    };
+
     let newbadges = [];
     badges.forEach(m => {
-      newbadges.push(m.replace("_", " "));
+      newbadges.push(
+        m
+          .replace("DISCORD_EMPLOYEE", `${emoji.brigade} Discord Employee`)
+          .replace("DISCORD_PARTNER", `${emoji.partner} Discord Partner`)
+          .replace("HYPESQUAD_EVENTS", `${emoji.events} Hypesquad Events`)
+          .replace("HOUSE_BRILLIANCE", `${emoji.brillance} Brillance`)
+          .replace("HOUSE_BRAVERY", `${emoji.bravery} Bravery`)
+          .replace("HOUSE_BALANCE", `${emoji.balance} Balance`)
+          .replace("BUGHUNTER_LEVEL_2", `${emoji.hunter_gold} BugHunter Gold`)
+          .replace("BUGHUNTER_LEVEL_1", `${emoji.hunter} BugHunter`)
+          .replace("EARLY_SUPPORTER", `${emoji.support} Early Supporter`)
+          .replace(
+            "VERIFIED_DEVELOPER",
+            `${emoji.developers} Verified Developer`
+          )
+      );
     });
 
     let embed = new MessageEmbed().setThumbnail(
@@ -91,9 +127,12 @@ module.exports = {
       }
     }
     //Check Roles used by members
- let roles = user.roles.cache.map(r => `<@&${r.id}>`).join(', ').replace(new RegExp(`<@&${message.guild.id}>`, 'g'), '');
-        if (roles.length === 0) roles = '-';
-                   
+    let roles = user.roles.cache
+      .map(r => `<@&${r.id}>`)
+      .join(", ")
+      .replace(new RegExp(`<@&${message.guild.id}>`, "g"), "");
+    if (roles.length === 0) roles = "-";
+
     //EMBED COLOR BASED ON member
     embed.setColor(
       user.displayHexColor === "#000000" ? "#ffffff" : user.displayHexColor
@@ -122,8 +161,16 @@ Bot: ${user.user.bot}
 Deleted User: ${user.deleted}
 Position: ${joinPosition || 1}
       `
-      )
-      .addField("Badges", newbadges.join(", ").toLowerCase() || "None")
+      );
+    let xxx = user.user.avatarURL({ dynamic: true });
+    if (xxx.includes("gif"))
+      embed.addField(
+        "Badget",
+        `${emoji.nitro} Nitro\n` + newbadges.join("\n") || "None"
+      );
+    if (!xxx.includes("gif"))
+      embed.addField("Badget", newbadges.join("\n") || "None");
+    embed
       .addField("Roles", roles)
       .addField("Permissions", `**\`${permissions.join("\n")}\`**`)
       .setFooter(user.user.presence.status, stat[user.user.presence.status]);

@@ -10,10 +10,9 @@ module.exports = {
   args: true,
   description: "stealemoji <emoji name>",
   usage: "stealemoji <emoji name>",
-  author: "MANAGE_EMOJIS",
-  bot: ["MANAGE_EMOJIS"],
+  authorPermission: ["MANAGE_EMOJIS"],
+  botPermission: ["MANAGE_EMOJIS"],
   run: async (client, message, args) => {
-    
     const emoji = args[0];
     if (!emoji) return message.channel.send(`Please Give Me A Emoji!`);
 
@@ -32,7 +31,8 @@ module.exports = {
         .setTitle(`Emoji Added`)
         .setColor(`${Color}`)
         .setDescription(
-          `Emoji Has Been Added! | Name : ${name || `${customemoji.name}`} | Preview : [Click Me](${Link})`
+          `Emoji Has Been Added! | Name : ${name ||
+            `${customemoji.name}`} | Preview : [Click Me](${Link})`
         );
       return message.channel.send(Added);
     } else {

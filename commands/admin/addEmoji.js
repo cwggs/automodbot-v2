@@ -10,8 +10,8 @@ module.exports = {
   args: true,
   description: "addemoji <url>",
   usage: "addemoji <url>",
-  author: "MANAGE_EMOJIS",
-  bot: ["MANAGE_EMOJIS"],
+  authorPermission: ["MANAGE_EMOJIS"],
+  botPermission: ["MANAGE_EMOJIS"],
   run: async (client, message, args) => {
     const emoji = args[0];
     const name = args.slice(1).join(" ").replace(" ","_").replace("'","_").replace("-","_").replace(".","_").replace("+","_");

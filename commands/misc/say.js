@@ -2,15 +2,10 @@ const db = require("quick.db");
 
 module.exports = {
   name: "say",
-
   category: "misc",
-
-  description: "Get bot ping :/",
-bot: ["MANAGE_MESSAGES"],
   usage: "say <msg>",
   args: true,
-
-  run: async (client, message, args, del, member) => {
+ run: async (client, message, args, del, member) => {
     message.delete();
     const usa = args.join(" ");
     if (!usa) return message.channel.send(`${message.author}, say <msg>`);

@@ -6,9 +6,21 @@ module.exports = {
   name: "viewmsg",
   category: "settings",
   args: true,
-  usage: "viewmsg <key // welcome/leave>",
- bot: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
-  author: 'VIEW_CHANNEL'||'EMBED_LINKS'||'ATTACH_FILES'||'MANAGE_CHANNELS'||'MANAGE_GUILD',
+  usage: "viewmsg <key // welcome/leave/inviter>",
+  botPermission: [
+    "VIEW_CHANNEL",
+    "EMBED_LINKS",
+    "ATTACH_FILES",
+    "MANAGE_CHANNELS",
+    "MANAGE_GUILD"
+  ],
+  authorPermission: [
+    "VIEW_CHANNEL",
+    "EMBED_LINKS",
+    "ATTACH_FILES",
+    "MANAGE_CHANNELS",
+    "MANAGE_GUILD"
+  ],
   description: "View Message <welcome/leave>",
   run: (client, message, args) => {
     const channel = message.mentions.channels.first();
@@ -29,21 +41,28 @@ module.exports = {
 
       case "leave":
         {
-         const leave = db.get(`levmsg_${message.guild.id}`);
+          const leave = db.get(`levmsg_${message.guild.id}`);
           const lev = new Discord.MessageEmbed()
-            .setDescription(
-              `View Message **${key}**\n\`\`\`\n${leave}\n\`\`\``)
+            .setDescription(`View Message **${key}**\n\`\`\`\n${leave}\n\`\`\``)
             .setColor("GREEN");
           message.channel.send(lev);
         }
         break;
-      case "welcome": {
-       const welcome = db.get(`welmsg_${message.guild.id}`);
-        const wel = new Discord.MessageEmbed()
-              .setDescription(
-              `View Message **${key}**\n\`\`\`\n${welcome}\n\`\`\``)
+      case "inviter":
+        {
+          let d = client.db.get(`inviter_${message.guild.id}`);
+          const wl = new Discord.MessageEmbed()
+            .setDescription(`View Message **${key}**\n\`\`\`\n${d}\n\`\`\``)
             .setColor("GREEN");
-      message.channel.send(wel);
+          message.channel.send(wl);
+        }
+        break;
+      case "welcome": {
+        const welcome = db.get(`welmsg_${message.guild.id}`);
+        const wel = new Discord.MessageEmbed()
+          .setDescription(`View Message **${key}**\n\`\`\`\n${welcome}\n\`\`\``)
+          .setColor("GREEN");
+        message.channel.send(wel);
       }
     }
   }

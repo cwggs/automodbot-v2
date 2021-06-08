@@ -12,7 +12,7 @@ module.exports = {
   run: async (client, message, args) => {
     message.delete();
     var filter = m => m.author.id === message.author.id;
-    message.channel
+    let c = await message.channel
       .send(`:eight_pointed_black_star:| **Send Give the Code Name**`)
       .then(msg => {
         message.channel
@@ -22,9 +22,11 @@ module.exports = {
             errors: ["time"]
           })
           .then(collected => {
+            if (c.first().content === "cancel")
+              return message.channel.send("Exiting setup..."); //Stops execution if command cancel is run
             let room = collected.first().content;
             collected.first().delete();
-            msg
+           msg
               .edit(":eight_pointed_black_star:| **Send give me the code**")
               .then(msg => {
                 message.channel
@@ -34,6 +36,7 @@ module.exports = {
                     errors: ["time"]
                   })
                   .then(collected => {
+                      return message.channel.send("Exiting setup..."); //Stops execution if command cancel is run
                     let consten = collected.first().content;
                     collected.first().delete();
                     msg.delete();
@@ -63,14 +66,17 @@ module.exports = {
                           src.url
                         );
                         let embed = new discord.MessageEmbed()
-                           .setAuthor('Sourceb.in', 'https://sourceb.in/icon.png')
+                          .setAuthor(
+                            "Sourceb.in",
+                            "https://sourceb.in/icon.png"
+                          )
                           .setTitle(`${room}`)
                           .setColor("RANDOM")
                           .setDescription(
                             `Code:\`\`\`kt\n${consten}\n\`\`\`\n**(${src.url})**\nThis link has been saved to the hasebinlist`
                           );
                         message.channel.send(embed);
-                      })
+                      });
                   });
               });
           });

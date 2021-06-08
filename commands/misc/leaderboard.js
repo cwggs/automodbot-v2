@@ -4,7 +4,7 @@ const fs = require("fs");
 module.exports = {
   name: "leaderboard",
   category: "misc",
-  bot: ["MANAGE_GUILD"],
+  botPermission: ["MANAGE_GUILD"],
 
   run: async (client, message, args) => {
     const coins = db
@@ -26,8 +26,9 @@ module.exports = {
         ? client.users.cache.get(coins[i].ID.split("_")[3]).tag
         : "Unknown#0000";
 
-      finalLb += `__**${coins.indexOf(coins[i]) +
-        1}.**__ **${userData} » \`${coins[i].data}\`**\n`;
+      finalLb += `__**${coins.indexOf(coins[i]) + 1}.**__ **${userData} » \`${
+        coins[i].data
+      }\`**\n`;
     }
 
     let embed = new MessageEmbed()

@@ -1,27 +1,25 @@
 const Discord = require("discord.js");
-const emojis = require("../../emojis.js");
+const emojis = require("../../emoji/emoji.js");
 
 module.exports = {
   name: "rrdel",
   args: true,
   category: "reaction",
+  premium: false,
   usage:
     "rrdel [channel mention | channelID] [messageID] [role mention | roleID] [emoji]",
-  bot: [
+ botPermission: [
     "VIEW_CHANNEL",
-    "EMBED_LINKS",
-    "ATTACH_FILES",
     "MANAGE_CHANNELS",
     "MANAGE_GUILD",
     "MANAGE_ROLES"
   ],
-  author:
-    "VIEW_CHANNEL" ||
-    "EMBED_LINKS" ||
-    "ATTACH_FILES" ||
-    "MANAGE_CHANNELS" ||
-    "MANAGE_GUILD" ||
-    "MANAGE_ROLES",
+  authorPermission: [
+    "VIEW_CHANNEL",
+    "MANAGE_CHANNELS",
+    "MANAGE_GUILD",
+    "MANAGE_ROLES"
+  ],
   run: async (client, message, args) => {
     if (!args[0])
       return message.channel.send(
@@ -76,7 +74,7 @@ module.exports = {
       embed2.setAuthor(message.author.tag, message.author.displayAvatarURL());
       embed2.setDescription(`**The Reaction Role has been deleted!** `);
       embed2.setFooter(
-        message.guild.name + " | made by cwkham",
+        message.guild.name + " | made by cwkhan",
         message.guild.iconURL()
       );
       embed2.setColor("GREEN");

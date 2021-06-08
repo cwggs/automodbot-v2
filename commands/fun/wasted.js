@@ -9,8 +9,8 @@ module.exports = {
   usage: "Wasted | <Mention Or ID>",
   run: async (client, message, args) => {
     
-    const Member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
-    const Data = await Random.Wasted({ Image: Member.user.displayAvatarURL({ format: "png" }), Color: Color });
+ const Member = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
+       const Data = await Random.Wasted({ Image: Member.user.displayAvatarURL({ format: "png" }), Color: Color });
 
     return message.channel.send(Data);
   }

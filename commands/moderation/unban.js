@@ -7,13 +7,10 @@ module.exports = {
   usage: "unban [name | tag | mention | ID] <reason> (optional)",
   aliases: ["ub", "unbanish"],
   category: "moderation",
+  botPermission: ["ADMINISTRATOR"],
+  authorPermission: ["ADMINISTRATOR"],
   run: async (client, message, args) => {
     const bot = client;
-    if (!message.member.hasPermission("BAN_MEMBERS"))
-      return message.channel.send(
-        "**You Dont Have The Permissions To Unban Someone! - [BAN_MEMBERS]**"
-      );
-
     if (!args[0]) return message.channel.send("**Please Enter A Name!**");
 
     let bannedMemberInfo = await message.guild.fetchBans();

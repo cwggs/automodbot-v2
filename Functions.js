@@ -186,5 +186,26 @@ module.exports = {
       Age: Song.age_restricted ? "Yes" : "No",
       Owner: message.author.username
     };
-  }
+  },
+  calculator: function (num1, operator, num2) {
+    if (!num1) throw new TypeError("Missing num1");
+    if (!operator) throw new TypeError("Missing operator");
+    if (!num2) throw new TypeError("Missing num2");
+    if (operator == "*") return num1 * num2;
+    if (operator == "^") return num1 ^ num2;
+    if (operator == "+") return num1 + num2;
+    if (operator == "-") return num1 - num2;
+    if (operator == "/") return num1 / num2;
+  },
+  async awaitReply(message, question, limit = 60000, obj = false) {
+        const filter = m => m.author.id === message.author.id;
+        await message.channel.send(question);
+        try {
+            const collected = await message.channel.awaitMessages(filter, { max: 1, time: limit, errors: ['time'] });
+            if (obj) return collected.first();
+            return collected.first().content;
+        } catch (e) {
+            return false;
+        }
+    }
 };

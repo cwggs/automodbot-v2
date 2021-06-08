@@ -5,8 +5,8 @@ module.exports = {
   category: "admin",
   args: true,
   usage: "addroleall <Roles>",
-  permissions: "MANAGE_ROLES" || "ADMINISTRATOR",
-  bot: ["MANAGE_ROLES"],
+  botPermission: ["MANAGE_ROLES"],
+  authorPermission: ["MANAGE_ROLES"],
   run: (client, message, args) => {
     if (!message.guild.me.hasPermission("MANAGE_ROLES"))
       return message.channel.send(

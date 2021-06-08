@@ -7,7 +7,7 @@ module.exports = {
     error: "<a:failed:798526823976796161>",
     success: "<a:success:798526789114134548>",
     moderation: "<:Moderation:813017010912624660>",
-    add: "<:96213:827500899080601650> ",
+    add: "<:reaction:834626098594578492>",
     settings: "<a:settings:813017145083559968>",
     misc: "<:misc:813018165155725363>",
     music: "<:music:813016916972273725>",
@@ -15,6 +15,8 @@ module.exports = {
     admin: "<:admin:813017614393671690>",
     utility: "<:utility:813017738741678090>",
     search: "<a:Search:813018021345886249>",
+    vc: '<:voice_channel:837320403416121385>',
+    text: '<:tyanChannels:837320130496561202>',
     fun: "<:fun:816832717832454164>"
   }
 };

@@ -2,9 +2,9 @@
   "//1": "describes your app and its dependencies",
   "//2": "https://docs.npmjs.com/files/package.json",
   "//3": "updating this file will download and update your packages",
-  "name": "Developer-Bot",
+  "name": "automodbot-v2",
   "version": "0.0.1",
-  "description": "A Advancedc discord fun and Moderation bot by cwkhan",
+  "description": "A Advanced Music Bot With Filters & Other Cool Stuff 😉",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -24,6 +24,7 @@
     "tracks": "^0.5.8",
     "google-play-scraper": "^8.0.2",
     "youtube-sr": "^2.0.5",
+    
     "discord-ytdl-core": "^5.0.0",
     "@discordjs/opus": "^0.3.2",
     "scrape-yt": "^1.4.7",
@@ -65,15 +66,20 @@
     "node-fetch": "^2.6.1",
     "something-random-on-discord": "^3.3.2",
     "node-superfetch": "^0.2.1",
-    "humanize-duration": "^3.25.1"
-  },
+    "humanize-duration": "^3.25.1",
+    "lodash": "^4.17.21",
+    "enmap": "^5.8.3",
+ "cun":"https://github.com/khanmanan/Automodbot-v2" },
   "engines": {
     "node": "12.x"
   },
   "repository": {
-    "url": "https://github.com/khanmanan/automodbot-v2"
+    "url": "https://glitch.com/edit/#!/hello-express"
   },
   "license": "MIT",
   "keywords": [
-au "glitdiscord   "exprbot]
+    "node",
+    "glitch",
+    "express"
+  ]
 }

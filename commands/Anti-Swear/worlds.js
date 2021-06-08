@@ -1,23 +1,9 @@
 const Discord = require("discord.js");
 module.exports = {
   name: "words",
-
-  bot: [
-    "VIEW_CHANNEL",
-    "EMBED_LINKS",
-    "ATTACH_FILES",
-    "MANAGE_CHANNELS",
-    "MANAGE_GUILD",
-    "MANAGE_ROLES"
-  ],
-  author:
-    "VIEW_CHANNEL" ||
-    "EMBED_LINKS" ||
-    "ATTACH_FILES" ||
-    "MANAGE_CHANNELS" ||
-    "MANAGE_GUILD" ||
-    "MANAGE_ROLES",
-  category: "anti-swear",
+ authorPermission: ["VIEW_CHANNEL", "MANAGE_GUILD"],
+  botPermission: ["VIEW_CHANNEL", "MANAGE_GUILD"],
+   category: "anti-swear",
   run: async (client, message, args) => {
     let embed = new Discord.MessageEmbed();
     embed.setTitle(`${message.guild.name} | Anti Swear words list`);

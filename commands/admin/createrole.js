@@ -6,8 +6,8 @@ module.exports = {
   description: "Creates A new role in the guild",
   category: "admin",
   args: true,
-  permissions:"MANAGE_ROLES" || "ADMINISTRATOR",
-  bot:["MANAGE_ROLES","ADMINISTRATOR"],
+  botPermission:["MANAGE_ROLES","ADMINISTRATOR"],
+  authorPermission:["MANAGE_ROLES","ADMINISTRATOR"],
   usage: "createrole <colorname> <Name>",
   run: async (client, message, args) => {
     const name = args.slice(1).join(" ");

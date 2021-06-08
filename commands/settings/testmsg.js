@@ -9,20 +9,9 @@ module.exports = {
   description: "welcome and leave test",
   args: false,
   cooldown: 2,
-  bot: [
-    "VIEW_CHANNEL",
-    "EMBED_LINKS",
-    "ATTACH_FILES",
-    "MANAGE_CHANNELS",
-    "MANAGE_GUILD"
-  ],
-  author:
-    "VIEW_CHANNEL" ||
-    "EMBED_LINKS" ||
-    "ATTACH_FILES" ||
-    "MANAGE_CHANNELS" ||
-    "MANAGE_GUILD",
-  run: async (client, message, args) => {
+ botPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+  authorPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+   run: async (client, message, args) => {
     const [key, ...value] = args;
     switch (key) {
       default:

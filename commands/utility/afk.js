@@ -1,7 +1,6 @@
 module.exports = {
   name: "afk",
   category: "utility",
-  
   run: async (client, message, args) => {
     let db = require ("quick.db")
     let status = db.get(`afkstatus_${message.guild.id}_${message.author.id}`)

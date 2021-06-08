@@ -11,20 +11,14 @@ const Discord = require("discord.js");
 module.exports = {
   name: "clear",
   category: "misc",
-
   aliases: ["purge", "delete", "prune"],
-
+  botPermission: ["MANAGE_MESSAGES"],
   run: async (client, message, args) => {
     // UPDATE ^ ACCORDING TO YOUR HANDLER
 
     let prefix = await client.db.get(`Prefix_${message.guild.id}`);
     if (!prefix) prefix = Default_Prefix;
     try {
-      if (!message.guild.me.hasPermission("MANAGE_MESSAGES"))
-        return message.reply(
-          "I don't have **MANAGE_MESSAGES** permissions to use this command."
-        );
-
       const commands = [
         `bots\` - Delete messages sent by bots. (Ignore humans)`,
         `humans\` - Delete messages sent by humans. (Ignore bots)`,

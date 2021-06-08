@@ -7,8 +7,9 @@ module.exports = {
   category: "admin",
   args: true,
   cooldown: 1,
-  permissions:"MANAGE_ROLES" || "ADMINISTRATOR",
-  usage: "removerole <Name>",
+  botPermission:["MANAGE_ROLES","ADMINISTRATOR"],
+  authorPermission:["MANAGE_ROLES","ADMINISTRATOR"],
+   usage: "removerole <Name>",
   run: async (client, message, args) => {
    message.delete()
      let roleDelete =

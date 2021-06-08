@@ -1,26 +1,23 @@
 const Discord = require("discord.js");
-const emojis = require("../../emojis.js");
+const emojis = require("../../emoji/emoji.js");
 
 module.exports = {
   name: "rradd",
   args: true,
   category: "reaction",
-  bot: [
+  botPermission: [
     "VIEW_CHANNEL",
-    "EMBED_LINKS",
-    "ATTACH_FILES",
     "MANAGE_CHANNELS",
     "MANAGE_GUILD",
     "MANAGE_ROLES"
   ],
-  author:
-    "VIEW_CHANNEL" ||
-    "EMBED_LINKS" ||
-    "ATTACH_FILES" ||
-    "MANAGE_CHANNELS" ||
-    "MANAGE_GUILD" ||
-    "MANAGE_ROLES",
-
+  authorPermission: [
+    "VIEW_CHANNEL",
+    "MANAGE_CHANNELS",
+    "MANAGE_GUILD",
+    "MANAGE_ROLES"
+  ],
+  premium: false,
   usage:
     "rradd [channel mention | channelID] [messageID] [role mention | roleID] [emoji]",
   run: async (client, message, args) => {
@@ -61,7 +58,7 @@ module.exports = {
         `:x: | **The emoji is already being used in The message for reaction Roles!**`
       );
       embed.setFooter(
-        message.author.tag + " | made by cwkhan 😎",
+        message.author.tag + " | made by cwkhan",
         message.author.displayAvatarURL({ dynamic: true })
       );
       embed.setTimestamp();
@@ -82,10 +79,10 @@ module.exports = {
     embed.setThumbnail(message.guild.iconURL());
     embed.setDescription(`**The Reaction Role has been Set up**`);
     embed.setFooter(
-      message.author.tag + " | made by cwkhan ",
+      message.author.tag + " | made by cwkhan",
       message.author.displayAvatarURL({ dynamic: true })
     );
-    embed.setColor("BLUE");
+    embed.setColor("RANDOM");
     embed.setTimestamp();
     message.channel.send({
       embed: embed

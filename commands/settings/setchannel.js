@@ -7,8 +7,8 @@ module.exports = {
   args: true,
   usage: "setchannel <key //welcome/leave/report/level/modlog/chat-bot/starboard> <channel>",
   description: "Set the channel",
-  bot: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
-  author: 'VIEW_CHANNEL'||'EMBED_LINKS'||'ATTACH_FILES'||'MANAGE_CHANNELS'||'MANAGE_GUILD',
+  botPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+  authorPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
  run: (client, message, args) => {
     const channel = message.mentions.channels.first();
     const [key, ...value] = args;
@@ -38,7 +38,7 @@ module.exports = {
               `**Done** From now on I will send welcome message in ${channel} when someone leaves the server`
             )
             .setColor("RED");
-          message.channel.send(leave);
+          message.channel.send(leave).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
         break;
       case "chat-bot":
@@ -54,7 +54,7 @@ module.exports = {
               `**Done** From now on I will send Chatbot in ${channel}`
             )
             .setColor("RED");
-          message.channel.send(chat);
+          message.channel.send(chat).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
         break;
       case "starboard":
@@ -64,13 +64,13 @@ module.exports = {
               `${client.emotes.error}Pls Give Invalid channel... Try again...`
             );
           }
-          db.set(`handleStarboard_${message.guild.id}`, channel.id);
+          db.set(`starboard_${message.guild.id}`, channel.id);
           const chat = new Discord.MessageEmbed()
             .setDescription(
               `**Done** From now on I will send Starboard in ${channel}`
             )
             .setColor("RED");
-          message.channel.send(chat);
+          message.channel.send(chat).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
         break;
       case "welcome":
@@ -86,9 +86,8 @@ module.exports = {
               `**Done** From now on I will send welcome message in ${channel} when someone joins the server`
             )
             .setColor("RED");
-          message.channel.send(welcome);
+          message.channel.send(welcome).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
-
         break;
       case "report":
         {
@@ -103,7 +102,7 @@ module.exports = {
               `**Done** From now on I will send reports member in ${channel}`
             )
             .setColor("RED");
-          message.channel.send(welcome);
+          message.channel.send(welcome).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
 
         break;
@@ -120,7 +119,7 @@ module.exports = {
               `**Done** From now on I will send level up in ${channel}`
             )
             .setColor("RED");
-          message.channel.send(welcome);
+          message.channel.send(welcome).then(m=>m.delete({timeout:5000}).catch(e=>{}));
         }
         break;
       case "modlog": {
@@ -163,7 +162,7 @@ module.exports = {
 
             message.channel.send(
               `**Modlog Channel Has Been Set Successfully in \`${channel.name}\`!**`
-            );
+            ).then(m=>m.delete({timeout:5000}).catch(e=>{}));
           }
         } catch {
           return message.channel.send(

@@ -9,8 +9,8 @@ module.exports = {
   description: "Kiss someone",
   run: async (client, message, args) => {
     
-    let target = message.mentions.members.first()
-    
+    let target = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
+   
     let data = await Random.getAnimeImgURL("kiss");
     
     let embed = new discord.MessageEmbed()

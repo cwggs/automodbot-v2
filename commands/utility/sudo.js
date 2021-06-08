@@ -5,7 +5,7 @@ module.exports = {
   category: "utility",
   args: true,
   cooldown: 5,
-  botpermission: ["MANAGE_WEBHOOKS"],
+  botPermission: ["MANAGE_WEBHOOKS"],
   run: async (client, message, args) => {
     message.delete();
     let user =

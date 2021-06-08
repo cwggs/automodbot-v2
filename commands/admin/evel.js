@@ -1,45 +1,47 @@
-const { MessageEmbed } = require('discord.js')
-
-const owner = "740947753135243354"//||"767726828311543820"
+const { MessageEmbed } = require("discord.js");
+const Discord = require("discord.js");
+const util = require("util");
+const tokenwarning = `Error: Unexpected token`;
+const owner = ["740947753135243354", "767726828311543820"];
 module.exports = {
-        name: "eval",
-        description: "Evaluates js code",
-        category: "owner",
-        aliases: ["e"],
-        args: true,
-        usage: 'eval <input>',
-    run: async (client, message, args) => {
-       if (message.author.id != owner) {return }
- 
-        function clean(text) {
-            if (typeof text === "string")
-                return text
-                    .replace(/`/g, "`" + String.fromCharCode(8203))
-                    .replace(/@/g, "@" + String.fromCharCode(8203));
-            else return text;
-        }
-  
-        try {
-            const code = args.join(" ").replace("@","")//.replace(`client.token`,"​client.token").replace(`client.user.setStatus`,"​client.user.setStatus").replace(`client.user.setUsername`,"​client.user.setUsername").replace(`client.user.setAvatar`,"​client.user.setAvatar").replace(`client.user.setActivity`,"​client.user.setActivity").replace(`client.user.setPresence`,"​client.user.setPresence");//.replace(`client.user.setUsername`,"​").replace(`client.user.setUsername`,"​").replace(`client.user.setUsername`,"​").replace(`client.user.setUsername`,"​");
-            let evaled = eval(code);
-
-            if (typeof evaled !== "string") evaled = require("util").inspect(evaled);
-
-            message.react("✅");
-            var emb = new MessageEmbed()
-                .setTitle('Result')
-                .setDescription(`\`\`\`js` + '\n' + clean(evaled) + `\n` + `\`\`\``)
-                .setFooter(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
-                .setColor(0xd26a0e)
-            message.channel.send(emb);
-        } catch (err) {
-            message.react("⚠");
-            var emb = new MessageEmbed()
-                .setTitle('Result')
-                .setDescription(`\`\`\`js` + '\n' + clean(err) + `\n` + `\`\`\``)
-                .setFooter(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
-                .setColor(0xd26a0e)
-            message.channel.send(emb);
-        }
+  name: "eval",
+  description: "Evaluates js code",
+  category: "owner",
+  aliases: ["e"],
+  args: true,
+  usage: "eval <input>",
+  run: async (client, message, args) => {
+    if (owner.includes(message.author.id) === false) {
+      return;
     }
-}
+
+    const code = args.join(" ");
+
+    function clean(text) {
+      if (typeof text !== "string")
+        text = require("util").inspect(text, { depth: 0 });
+      text = text
+        .replace(/`/g, "`" + String.fromCharCode(8203))
+        .replace(/@/g, "@" + String.fromCharCode(8203));
+      return text;
+    }
+
+    const evalEmbed = new Discord.MessageEmbed().setColor("RANDOM");
+    try {
+      var evaled = clean(await eval(code));
+      if (evaled.startsWith("NTQ3M")) evaled = tokenwarning;
+      if (evaled.constructor.name === "Promise")
+        evalEmbed.setDescription(`\`\`\`\n${evaled}\n\`\`\``);
+      else evalEmbed.setDescription(`\`\`\`js\n${evaled}\n\`\`\``);
+      const newEmbed = new Discord.MessageEmbed()
+        .addField("📤 Login", `\`\`\`javascript\n${code}\n\`\`\``)
+        .addField("📥 Exit", `\`\`\`js\n${evaled}\`\`\``)
+        .setColor('RANDOM');
+      message.channel.send(newEmbed);
+    } catch (err) {
+      evalEmbed.addField("There was an error;", `\`\`\`js\n${err}\n\`\`\``);
+      evalEmbed.setColor("#FF0000");
+      message.channel.send(evalEmbed);
+    }
+  }
+};

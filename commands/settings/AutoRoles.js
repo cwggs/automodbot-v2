@@ -9,8 +9,8 @@ module.exports = {
   permissions: "ADMINISTRATOR",
   usage: "setautoroles <@roles>",
   description: "Set the Roles Welcome",
-  bot: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
-  author: 'VIEW_CHANNEL'||'EMBED_LINKS'||'ATTACH_FILES'||'MANAGE_CHANNELS'||'MANAGE_GUILD',
+  botPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+  authorPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
   run: (client, message, args) => {
     let r = message.mentions.roles.first();
         if (message.guild.me.roles.highest.comparePositionTo(r) < 0) {

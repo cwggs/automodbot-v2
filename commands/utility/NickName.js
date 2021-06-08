@@ -7,7 +7,7 @@ module.exports = {
   category: "moderation",
   description: "Sets Or Changes Nickname Of An User",
   usage: "setnick [mention | name | nickname | ID] <{tag}/nickname>",
-  bot: ["CHANGE_NICKNAME"],
+  botPermission: ["CHANGE_NICKNAME"],
   args: true,
   category: "utility",
   run: async (client, message, args) => {

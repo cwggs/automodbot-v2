@@ -2,15 +2,15 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const { Client } = require("discord.js");
 const db = require("quick.db");
+const colors = require("colors");
 const format = require(`humanize-duration`);
 const ms = require("pretty-ms");
 const canvacord = require("canvacord");
 const mongoose = require("mongoose");
 const { MessageEmbed } = require("discord.js");
 const client = new Client({
-  disableEveryone: 'everyone',
+  disableEveryone: "everyone",
   partials: ["REACTION", "MESSAGE", "CHANNEL"]
-
 });
 require("./reply"); //<message.inlineReply>
 const {
@@ -19,6 +19,8 @@ const {
   Support,
   id,
   Color,
+  mongodb,
+  Server_ID,
   DateDat,
   Dashboard
 } = require("./config.js");
@@ -30,18 +32,36 @@ client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 client.queue = new Map();
+
 client.config = require("./emoji/emojis");
+let { awaitReply } = require("./Functions.js");
 client.emotes = client.config.emojis;
 client.db = require("quick.db");
 client.discord = require("discord.js");
+client.resolveUser = resolveUser;
+client.awaitReply = awaitReply;
 client.random = getRandomString;
+
 client.on("ready", async () => {
+  fetch(`https://skybotlistpr.glitch.me/api/bots/stats`, {
+    method: "POST",
+    headers: {
+      serverCount: client.guilds.cache.size,
+      "Content-Type": "application/json",
+      Authorization: "yhiJwowjQneauWvPaZnDfGHY"
+    }
+  }).then(console.log("Server count posted."));
+
+  console.clear();
   console.log(`Bot Is Ready To Go!\nTag: ${client.user.tag}`);
   client.user
-    .setActivity(
-      `Commands: ${Default_Prefix}help\n ${client.guilds.cache.size} Server | ${client.users.cache.size} User`,
-      { type: "WATCHING" }
-    )
+    .setPresence({
+      activity: {
+        type: "WATCHING",
+        name: `Commands: ${Default_Prefix}help\n ${client.guilds.cache.size} Server | ${client.users.cache.size} User`
+      },
+      status: "idle"
+    })
     .then(console.log)
     .catch(console.error);
 });
@@ -75,19 +95,24 @@ for (let file of fs.readdirSync("./events/")) {
     );
   }
 }
+//-------------------------------------------- S N I P E -------------------------------------------
 
 client.snipe = new Map();
 client.on("messageDelete", function(message, channel) {
   client.snipe.set(message.channel.id, {
     content: message.content,
-    author: message.author.tag,
+    author: message.author.username,
     image: message.attachments.first()
       ? message.attachments.first().proxyURL
       : null
   });
 });
+
+//-------------------------------------------- A N T I  S W E A R -------------------------------------------
+
 client.on("message", async message => {
-  if (message.author.bot) return;
+  if (message.author.bot || !message.guild || message.webhookID) return;
+
   let words = db.get(`words_${message.guild.id}`);
   let yus = db.get(`message_${message.guild.id}`);
   if (yus === null) {
@@ -121,9 +146,12 @@ client.on("message", async message => {
   }
   if (check(message.content) === true) {
     message.delete();
-    message.channel.send(pog).then(m=>m.delete({timeout:5000}).catch(e=>{}));
+    message.channel
+      .send(pog)
+      .then(m => m.delete({ timeout: 5000 }).catch(e => {}));
   }
 });
+
 //<SETUP>
 client.on("message", async message => {
   if (message.author.bot || !message.guild || message.webhookID) return;
@@ -142,6 +170,13 @@ client.on("message", async message => {
     .trim()
     .split(/ +/);
   let cmd = args.shift().toLowerCase();
+
+  let cmdx = db.get(`cmd_${message.guild.id}`);
+  if (cmdx) {
+    let cmdy = cmdx.find(x => x.name === cmd);
+    if (cmdy) message.channel.send(cmdy.responce);
+  }
+
   let command =
     client.commands.get(cmd) || client.commands.get(client.aliases.get(cmd));
   if (!command) return;
@@ -174,6 +209,28 @@ client.on("message", async message => {
       }
     }
   }
+
+  if (command.enabled === false) {
+    const embed = new Discord.MessageEmbed()
+      .setDescription(`This command is disabled.`)
+      .setColor("RED")
+      .setTimestamp();
+    message.channel.send(embed);
+    return;
+  }
+  if (command.premium === false) {
+    let server = client.guilds.cache.get(Server_ID);
+    if (!server.members.cache.find(r => r.id === message.author.id)) {
+      const embed = new Discord.MessageEmbed()
+        .setDescription(
+          `This command is Premium\nPlease Join [Server](https://dsc.gg/mincoder) To Get Premium Command`
+        )
+        .setColor("GOLD")
+        .setTimestamp();
+      message.channel.send(embed);
+      return;
+    }
+  }
   //<COMMAND USAGE AND DESCRIPTION>
   if (command.args && !args.length) {
     return message.channel.send(
@@ -189,10 +246,12 @@ client.on("message", async message => {
         )
     );
   }
-  if (command.bot) {
+  //-------------------------------------------- P E R M I S S I O N -------------------------------------------
+
+  if (command.botPermission) {
     let neededPerms = [];
 
-    command.bot.forEach(p => {
+    command.botPermission.forEach(p => {
       if (!message.guild.me.hasPermission(p)) neededPerms.push("`" + p + "`");
     });
 
@@ -202,67 +261,30 @@ client.on("message", async message => {
           .setColor("RED")
           .setTimestamp()
           .setDescription(
-            `I need **${neededPerms.join(
+            `I need ${neededPerms.join(
               ", "
-            )}** permission(s) to execute the command!`
+            )} permission(s) to execute the command!`
           )
       );
   }
 
-  if (command.author) {
-    const authorPerms = message.channel.permissionsFor(message.author);
-    if (!authorPerms || !authorPerms.has(command.author || "ADMINISTRATOR")) {
+  if (command.authorPermission) {
+    let neededPerms = [];
+
+    command.authorPermission.forEach(p => {
+      if (!message.member.hasPermission(p)) neededPerms.push("`" + p + "`");
+    });
+    if (neededPerms.length)
       return message.channel.send(
         new MessageEmbed()
           .setColor("RED")
           .setTimestamp()
           .setDescription(
-            `You do not have permission to use this command.\nThis command requires \`${command.author}\``
+            `You do not have permission to use this command.\nThis command requires ${neededPerms.join(
+              ", "
+            )}`
           )
       );
-    }
-  }
- if (command.permissions) {
-    const authorPerms = message.channel.permissionsFor(message.author);
-    if (!authorPerms || !authorPerms.has(command.permissions || "ADMINISTRATOR")) {
-      return message.channel.send(
-        new MessageEmbed()
-          .setColor("RED")
-          .setTimestamp()
-          .setDescription(
-            `You do not have permission to use this command.\nThis command requires \`${command.permissions}\``
-          )
-      );
-    }
-  }
-
- if (command.permission) {
-    const authorPerms = message.channel.permissionsFor(message.author);
-    if (!authorPerms || !authorPerms.has(command.permission || "ADMINISTRATOR")) {
-      return message.channel.send(
-        new MessageEmbed()
-          .setColor("RED")
-          .setTimestamp()
-          .setDescription(
-            `You do not have permission to use this command.\nThis command requires \`${command.permission}\``
-          )
-      );
-    }
-  }
-
-  if (command.guildOnly && message.channel.type === "dm") {
-    return message.reply("I can't execute that command inside DMs!");
-  }
-  if (command.owner && message.author.id != `${message.guild.ownerID}`) {
-    const owmer = new MessageEmbed()
-      .setColor("RED")
-      .setDescription(
-        "<a:failed:798526823976796161>These commands can only be used by owner"
-      );
-
-    return message.channel
-      .send(owmer)
-      .then(m => m.delete({ timeout: 20000 }).catch(e => {}));
   }
   if (!cooldowns.has(command.name)) {
     cooldowns.set(command.name, new Discord.Collection());
@@ -279,7 +301,7 @@ client.on("message", async message => {
           .setColor("RED")
           .setTimestamp()
           .setDescription(
-            `<a:failed:798526823976796161> Please wait **${ms(
+            `${client.emotes.error} Please wait **${ms(
               timeLeft
             )}** before reusing the command again.`
           )
@@ -288,7 +310,6 @@ client.on("message", async message => {
   }
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
   try {
     if (command) {
       command.run(client, message, args);
@@ -306,10 +327,11 @@ client.on("message", async message => {
       .send(errrr)
       .then(m => m.delete({ timeout: 13000 }).catch(e => {}));
 
-    client.logger.error(error);
+    client.error(error);
   }
 });
 function xp(message) {
+  if (message.author.bot || !message.guild || message.webhookID) return;
   const randomnumber = Math.floor(Math.random() * 10) + 15;
   db.add(`guild_${message.guild.id}_xp_${message.author.id}`, randomnumber);
   db.get(`guild_${message.guild.id}_xptotal_${message.guild.id}`, randomnumber);
@@ -342,7 +364,7 @@ function xp(message) {
         .setRequiredXP(xpNeeded)
         .setLevel(newLevel)
         .setRank(0, "a", false)
-        .setStatus(user.presence.status)
+        .setStatus(user.presence.status, true, 5)
         .setProgressBar("#00FFFF", "COLOR")
         .setUsername(user.username, color)
         .setDiscriminator(user.discriminator)
@@ -375,6 +397,7 @@ function xp(message) {
 }
 //<Chat Bot>
 client.on("message", async message => {
+  if (message.author.bot || !message.guild || message.webhookID) return;
   const cchann = client.db.get(`chatbot_${message.guild.id}`);
   if (cchann === null) return;
   if (!cchann) return;
@@ -400,13 +423,15 @@ client.on("message", async message => {
 });
 
 client.on("message", async message => {
-  if (message.author.bot) return;
+  if (message.author.bot || !message.guild || message.webhookID) return;
+  let Prefix = await db.get(`Prefix_${message.guild.id}`);
+  if (!Prefix) Prefix = Default_Prefix;
+  if (message.content.startsWith(Prefix + "react")) return;
   let msg = message.content;
-
   let emojis = msg.match(/(?<=:)([^:\s]+)(?=:)/g);
   if (!emojis) return;
   emojis.forEach(m => {
-    let emoji = client.emojis.cache.find(x => x.name === m);
+    let emoji = message.guild.emojis.cache.find(x => x.name === m);
     if (!emoji) return;
     let temp = emoji.toString();
     if (new RegExp(temp, "g").test(msg))
@@ -457,9 +482,26 @@ function getRandomString(length) {
 
   return s;
 }
+function resolveUser(search) {
+  if (!search || typeof search !== "string") return null;
+  let user = null;
+  if (search.match(/^<@!?(\d+)>$/))
+    user = this.users.fetch(search.match(/^<@!?(\d+)>$/)[1]).catch(() => {});
+  if (search.match(/^!?(\w+)#(\d+)$/) && !user)
+    user = this.users.cache.find(
+      u =>
+        u.username === search.match(/^!?(\w+)#(\d+)$/)[0] &&
+        u.discriminator === search.match(/^!?(\w+)#(\d+)$/)[1]
+    );
+  if (search.match(/.{2,32}/) && !user)
+    user = this.users.cache.find(u => u.username === search);
+  if (!user) user = this.users.fetch(search).catch(() => {});
+  return user;
+}
 
 client
   .login(Token)
   .catch(() =>
     console.log(`❌ Invalid Token Is Provided - Please Give Valid Token!`)
   );
+// Load settings file.

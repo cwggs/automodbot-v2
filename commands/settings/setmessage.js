@@ -6,12 +6,13 @@ module.exports = {
   name: "setmsg",
   category: "settings",
   args: true,
- bot: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
-  author: 'VIEW_CHANNEL'||'EMBED_LINKS'||'ATTACH_FILES'||'MANAGE_CHANNELS'||'MANAGE_GUILD',
- usage: "setmsg <key // welcome/leave> <msg>",
+  
+ botPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+  authorPermission: ['VIEW_CHANNEL','EMBED_LINKS','ATTACH_FILES','MANAGE_CHANNELS','MANAGE_GUILD'],
+   usage: "setmsg <key // welcome/leave/inviter> <msg>",
   description: "Set the welcome",
   run: (client, message, args) => {
-//    const channel = message.mentions.channels.first();
+    //    const channel = message.mentions.channels.first();
     const [key, ...value] = args;
     switch (key) {
       default:
@@ -34,7 +35,7 @@ module.exports = {
               .send(
                 `${client.emotes.error}\`Please give a message to welcomer ^(Must include ({member},{username},{tag},{server},{size},{date},{position}) for this to work!)^\``
               )
-              .then(m => m.delete({ timeout: 8000 }).catch(e => {}));
+              .then(m => m.delete({ timeout: 80000 }).catch(e => {}));
           }
           db.set(`levmsg_${message.guild.id}`, msg);
           const lev = new Discord.MessageEmbed()
@@ -43,17 +44,35 @@ module.exports = {
           message.channel.send(lev);
         }
         break;
-      case "welcome": {
+      case "welcome":
+        {
+          const msg = args.slice(1).join(" ");
+          if (!msg) {
+            return message.channel
+              .send(
+                `${client.emotes.error}\`Please give a message to welcomer ^(Must include ({member},{username},{tag},{server},{size},{date},{position}) for this to work!)^\``
+              )
+              .then(m => m.delete({ timeout: 80000 }).catch(e => {}));
+          }
+
+          db.set(`welmsg_${message.guild.id}`, msg);
+          const wel = new Discord.MessageEmbed()
+            .setDescription(`**Done** From now on I will send\n\`${msg}\``)
+            .setColor("RED");
+          message.channel.send(wel);
+        }
+        break;
+      case "inviter": {
         const msg = args.slice(1).join(" ");
         if (!msg) {
           return message.channel
             .send(
-              `${client.emotes.error}\`Please give a message to welcomer ^(Must include ({member},{username},{tag},{server},{size},{date},{position}) for this to work!)^\``
+              `${client.emotes.error}\`Please give a message to welcomer ^(Must include ({user:username},{user:mention},{user:tag},{inviter:mention},{inviter:tag},{inviter:username},{inviter:total},{inviter:code}) for this to work!)^\``
             )
-            .then(m => m.delete({ timeout: 8000 }).catch(e => {}));
+            .then(m => m.delete({ timeout: 80000 }).catch(e => {}));
         }
 
-        db.set(`welmsg_${message.guild.id}`, msg);
+        db.set(`inviter_${message.guild.id}`, msg);
         const wel = new Discord.MessageEmbed()
           .setDescription(`**Done** From now on I will send\n\`${msg}\``)
           .setColor("RED");

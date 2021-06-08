@@ -7,7 +7,7 @@ module.exports = {
   usage: "eject <user>",
   category: "fun",
   run: async (client, message, args) => {
-    const user = message.mentions.users.first()
+    const user = await client.resolveUser(args[0])
     const imp = [true, false];
     const imposter = imp[Math.floor(Math.random() * imp.length)];
     const crew = ["black", "blue", "brown", "cyan", "darkgreen", "lime", "orange", "pink", "purple", "red", "white", "yellow"]

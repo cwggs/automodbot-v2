@@ -6,16 +6,9 @@ module.exports = {
   category: "moderation",
   args: true,
   usage: "unmute <user>",
+  botPermission: ["MANAGE_GUILD"],
+  authorPermission: ["MANAGE_GUILD"],
   run: async (client, message, args) => {
-    if (!message.member.hasPermission("MANAGE_GUILD"))
-      return message.channel.send(
-        "**You Dont Have The Permissions To Unmute Someone!**"
-      );
-    if (!message.guild.me.hasPermission("MANAGE_GUILD"))
-      return message.channel.send(
-        "**I Don't Have Permissions To Unmute Someone!**"
-      );
-    if (!args[0]) return message.channel.send("**Please Enter A User!**");
     let mutee =
       message.mentions.members.first() ||
       message.guild.members.cache.get(args[0]) ||
@@ -31,7 +24,7 @@ module.exports = {
 
     let muterole;
     let dbmute = await db.fetch(`muterole_${message.guild.id}`);
-    let muteerole = message.guild.roles.cache.find(r => r.name === "muted");
+    let muteerole = message.guild.roles.cache.find(r => r.name === "Muted");
 
     if (!message.guild.roles.cache.has(dbmute)) {
       muterole = muteerole;

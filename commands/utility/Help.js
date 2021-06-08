@@ -18,7 +18,12 @@ module.exports = {
         .setAuthor(command.name, client.user.displayAvatarURL())
         .addField(" > Description", command.description || "Not Provided :(")
         .addField(" > Usage", "`" + command.usage + "`" || "Not Provied")
-        .setThumbnail(client.user.displayAvatarURL())
+       .addField(
+          `> Required Permission`,
+          `\`\`\`html\n${command.permissions ||command.permission ||command.botPermission || "No Permission"}\n\`\`\``,
+          true
+        )
+      .setThumbnail(client.user.displayAvatarURL())
         .setColor("BLUE")
         .setFooter(client.user.username, client.user.displayAvatarURL());
 

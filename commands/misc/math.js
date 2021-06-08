@@ -30,7 +30,6 @@ module.exports = {
         .send(`Please Give Me Valid Equation | Try Again Later!`)
         .then(() => console.log(error));
 
-      return message.reply(`Cannot send because there is no Msg set`);
     }
   }
 };

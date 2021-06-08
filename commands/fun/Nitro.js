@@ -7,7 +7,7 @@ module.exports = {
   run: async (client, message, args) => {
     message.channel.send(
       `htt${String.fromCharCode(8203)}ps://discord.${String.fromCharCode(8203)}gift/${client.random(24)}`
-      ,{ files: [{ attachment: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQblaRj0NQjberZWwXntlfBdcI0QIY0WLYUZg&usqp=CAU', name: "Nitro.png" }]}
+      ,{ files: [{ attachment: 'https://cdn.discordapp.com/attachments/774606487397466113/834809116869787718/nitro-1.png', name: "Nitro.png" }]}
     );
   }
 };
